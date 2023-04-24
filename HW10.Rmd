@@ -1,0 +1,65 @@
+---
+title: "HW10"
+author: "Tracie-Lynn Lamoreux"
+date: "2023-04-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(shiny)
+library(maps)
+acc <- read.csv("https://raw.githubusercontent.com/yumouqiu/DS202-Spring2023/main/Practice/data/fars2016/accident.csv", stringsAsFactors = FALSE)
+```
+
+```{r}
+states <- map_data("state")
+head(states)
+acc
+names(acc)[names(acc) == "LONGITUD"] <- "long"
+names(acc)[names(acc) == "LATITUDE"] <- "lat"
+us_acc <- acc[acc$lat >= 24.5 & acc$lat <= 49.5 & 
+                acc$long >= -124.8 & acc$long <= -66.9, ]
+map <- states %>% ggplot(aes(x = long, y = lat)) + geom_path(aes(group = group)) + geom_point(data = us_acc, aes(x=long, y = lat))
+```
+
+
+```{r}
+day_freq <- table(acc$DAY_WEEK)
+acc2 <- acc %>%  filter(acc$HOUR < 30) 
+ggplot(acc2, aes(x = HOUR)) +
+  geom_histogram(binwidth = 1, fill = "blue") +
+  ggtitle("Accidents by Hour of the Day") +
+  xlab("Hour of the Day") +
+  ylab("Number of Accidents")
+```
+
+```{r}
+acc$DRUNK_DR<- as.numeric(acc$DRUNK_DR)
+atleast1 <- acc %>%
+  filter(DRUNK_DR >= 1)
+nrow(atleast1)
+```
+
+
+```{r}
+person <- read.csv("https://raw.githubusercontent.com/yumouqiu/DS202-Spring2023/main/Practice/data/fars2016/person.csv", stringsAsFactors = FALSE)
+drivers <- person %>%
+  filter(PER_TYP == 1)
+accident_with_drivers <- acc %>%
+  inner_join(drivers, by = "ST_CASE")
+```
+
+
+```{r}
+accidents_by_day_hour_gender <- accident_with_drivers %>%
+  group_by(DAY_WEEK, HOUR.x, SEX) %>%
+  summarize(n = n())
+
+ggplot(accidents_by_day_hour_gender, aes(x = HOUR.x, y = n, color = SEX)) +
+  geom_line(size = 1) +
+  facet_wrap(~DAY_WEEK, ncol = 3) +
+  labs(x = "Hour of the day", y = "Number of accidents", color = "Gender")
+```
