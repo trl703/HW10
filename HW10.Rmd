@@ -58,6 +58,8 @@ accidents_by_day_hour_gender <- accident_with_drivers %>%
   group_by(DAY_WEEK, HOUR.x, SEX) %>%
   summarize(n = n())
 
+accidents_by_day_hour_gender <- accidents_by_day_hour_gender %>% filter(HOUR.x <30)
+
 ggplot(accidents_by_day_hour_gender, aes(x = HOUR.x, y = n, color = SEX)) +
   geom_line(size = 1) +
   facet_wrap(~DAY_WEEK, ncol = 3) +
