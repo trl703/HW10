@@ -28,6 +28,7 @@ map <- states %>% ggplot(aes(x = long, y = lat)) + geom_path(aes(group = group))
 
 ```{r}
 day_freq <- table(acc$DAY_WEEK)
+day_freq
 acc2 <- acc %>%  filter(acc$HOUR < 30) 
 ggplot(acc2, aes(x = HOUR)) +
   geom_histogram(binwidth = 1, fill = "blue") +
@@ -36,6 +37,8 @@ ggplot(acc2, aes(x = HOUR)) +
   ylab("Number of Accidents")
 ```
 
+Accidents are more common on days 1, 6, and 7 (presumably the three weekend days). Day 7 has almost 1000 more accidents than day 3. Similar, accidents are more likely to occur during the evening, peaking at 18:00-19:00. The time with the least accidents is early morning, from 4:00-5:00. There is a brief peak at 6:00-7:00 as people go to work, it drops in the early morning, then climbs to the evening.
+
 ```{r}
 acc$DRUNK_DR<- as.numeric(acc$DRUNK_DR)
 atleast1 <- acc %>%
@@ -43,6 +46,7 @@ atleast1 <- acc %>%
 nrow(atleast1)
 ```
 
+There are 8720 accidents with at least one drunk driver.
 
 ```{r}
 person <- read.csv("https://raw.githubusercontent.com/yumouqiu/DS202-Spring2023/main/Practice/data/fars2016/person.csv", stringsAsFactors = FALSE)
@@ -59,6 +63,16 @@ accidents_by_day_hour_gender <- accident_with_drivers %>%
   summarize(n = n())
 
 accidents_by_day_hour_gender <- accidents_by_day_hour_gender %>% filter(HOUR.x <30)
+
+```
+
+```{r}
+#making SEX into a factor so it separates out each line by gender--the graph was weird, nearly unreadable without doing this
+accidents_by_day_hour_gender <- accidents_by_day_hour_gender %>% mutate(SEX = as.factor(SEX))
+```
+
+
+```{r}
 
 ggplot(accidents_by_day_hour_gender, aes(x = HOUR.x, y = n, color = SEX)) +
   geom_line(size = 1) +
