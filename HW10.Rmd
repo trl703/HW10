@@ -1,6 +1,6 @@
 ---
 title: "HW10"
-author: "Tracie-Lynn Lamoreux"
+author: "Tracie-Lynn Lamoreux, Nic Rhoads"
 date: "2023-04-24"
 output: html_document
 ---
