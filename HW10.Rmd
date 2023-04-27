@@ -17,7 +17,6 @@ acc <- read.csv("https://raw.githubusercontent.com/yumouqiu/DS202-Spring2023/mai
 ```{r}
 states <- map_data("state")
 head(states)
-acc
 names(acc)[names(acc) == "LONGITUD"] <- "long"
 names(acc)[names(acc) == "LATITUDE"] <- "lat"
 us_acc <- acc[acc$lat >= 24.5 & acc$lat <= 49.5 & 
